@@ -28,3 +28,4 @@ Current state:
     - Send game packets to the client with its (4 bit) identifier and receive back
       *emulate every Client with ips from (Probably personalizable?) 192.168.1.150 to .165 (50 + 16 max client (game cap)) and redirect the data back with its corresponding (4 bit) identifier
     
+PD: I also have the suspicion that the code might be reusable to make lobbies of a lot of other games that only allow for lan games since it looks like a pretty much simple behavior
