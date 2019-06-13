@@ -14,7 +14,7 @@ Current state:
   Client -> Can receive the ping from the real server and broadcast it
 ```
 
-###Need to do:
+### Need to do:
  * LobbyServer:
     - Complete. informs the clients of the available servers and the server of the clients it needs to send info too
  * Client:
