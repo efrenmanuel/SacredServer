@@ -8,9 +8,11 @@ definitions:
   LobbyServer: server that only forwards the game info and client info to the GameClients
 
 Current state:
+```
   Can send the ping from a main server (the same as the gameserver to the clients)
   Lobby server -> none
   Client -> Can receive the ping from the real server and broadcast it
+```
 
 Need to do:
  * LobbyServer:
