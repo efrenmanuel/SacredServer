@@ -18,7 +18,11 @@ public class DAODatagramSocket {
 
     private DatagramSocket datagramSocket;
     private ServerSocket serverSocket;
-
+    
+    /**
+     * Class to make using datagramSocket a lil easier on me
+     * @param socket The socket to use
+     */
     public DAODatagramSocket(DatagramSocket socket) {
         try {
             this.datagramSocket = socket;
@@ -113,6 +117,12 @@ public class DAODatagramSocket {
         }
     }
     
+    
+    /**
+     * Sends the packet
+     * @param packet the packet to send
+     * @return true if it was a success
+     */
     public boolean send(DatagramPacket packet){
         try {
             datagramSocket.send(packet);

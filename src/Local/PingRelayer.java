@@ -5,11 +5,11 @@
  */
 package Local;
 
-import Remote.Client;
 import Resources.DAODatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,16 +20,15 @@ import java.util.logging.Logger;
 public class PingRelayer implements Runnable {
 
     private final DAODatagramSocket datagramSocket;
-    private final String lobbyAddress;
+    private final ArrayList<String> clientAddresses;
     private final int port;
 
-    public PingRelayer(DAODatagramSocket datagramSocket, String lobbyAddress, int port) {
+    public PingRelayer(DAODatagramSocket datagramSocket, ArrayList<String> clientAddresses, int port) {
         this.datagramSocket = datagramSocket;
-        this.lobbyAddress = lobbyAddress;
+        this.clientAddresses = clientAddresses;
         this.port = port;
     }
 
-   
     @Override
     public void run() {
         byte[] buf = new byte[512];
@@ -40,11 +39,13 @@ public class PingRelayer implements Runnable {
                 System.out.println("Listening");
                 datagramSocket.receive(packet);
                 packet.setLength(packet.getLength());
-                packet.setAddress(InetAddress.getByName(lobbyAddress));
                 packet.setPort(port);
-                System.out.println("Sending data.");
-                datagramSocket.send(packet);
-                System.out.println("Data sent.");
+                for (String address : clientAddresses) {
+                    packet.setAddress(InetAddress.getByName(address));
+                    System.out.println("Sending ping to " + address);
+                    datagramSocket.send(packet);
+                    System.out.println("Data sent.");
+                }
             } catch (UnknownHostException ex) {
                 Logger.getLogger(PingRelayer.class.getName()).log(Level.SEVERE, null, ex);
             }

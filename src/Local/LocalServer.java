@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,20 +25,22 @@ public class LocalServer implements Runnable {
 
     DAODatagramSocket datagramSocket;
     Socket socket;
+    ArrayList<String> clientAddresses;
     String lobbyAddress;
     int port;
 
     /**
-     *
-     * @param lobbyAddress Address of the lobby server
+     * Local Server that takes everything from the game server and distributes it to the clients and emulates the clients in the network with ips from 192.168.1.150 to 192.168.1.166 (max players is 66)
+     * @param clientAddress Address of the lobby server
      * @param port Port of the local Sacred server, Usually 2005
      */
     public LocalServer(String lobbyAddress, int port) {
         try {
 
             datagramSocket = new DAODatagramSocket(new DatagramSocket(port));
-            this.lobbyAddress=lobbyAddress;
+            this.clientAddresses=new ArrayList<>();
             this.port=port;
+            this.lobbyAddress=lobbyAddress;
         } catch (SocketException ex) {
             System.out.println(ex);
         }
@@ -46,7 +49,7 @@ public class LocalServer implements Runnable {
 
     @Override
     public void run() {
-        Thread pingRelayer = new Thread(new PingRelayer(datagramSocket, lobbyAddress, 2004)); //2004 port for the remote server
+        Thread pingRelayer = new Thread(new PingRelayer(datagramSocket, clientAddresses, 2004)); //2004 port for the remote server
         pingRelayer.start();
 
     }

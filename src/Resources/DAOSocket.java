@@ -20,6 +20,11 @@ public class DAOSocket {
     private Socket clientSocket;
     PrintWriter writer;
     
+    /**
+     * Class to make using sockets a little easier on me
+     * @param serverAddress The local address of the listening socket
+     * @param port The port to listen to
+     */
     public DAOSocket(String serverAddress, int port){
         try {
             clientSocket= new Socket(InetAddress.getByName(serverAddress), port);

@@ -22,7 +22,10 @@ public class Server {
 
     private SocketAddress address;
     private ArrayList<InetAddress> clients;
-
+    /**
+     * Lobby server
+     * @param address 
+     */
     public Server(SocketAddress address) {
             this.address = address;
             this.clients= new ArrayList<>();

@@ -6,7 +6,7 @@
 package Main;
 
 import Local.LocalServer;
-import Remote.Client;
+import Local.Client;
 import Resources.DAOSocket;
 import Resources.DAODatagramSocket;
 import Resources.DaoServerSocket;
@@ -32,14 +32,14 @@ public class TestingMain {
             System.out.println("Input type of socket to test:\n 1.-Client\n 2.-Server");
             switch (scan.nextInt()) {
                 case 1:
-                    Thread client = new Thread(new Client("efrenmanuel.es", 2004));
+                    Thread client = new Thread(new Client("efrenmanuel.es", 2004)); //Client test, has to receive the data.
                     client.start();
                     while (true) {                        
                         
                     }
                     //break;
                 case 2:
-                    Thread local = new Thread(new LocalServer("efrenmanuel.es", 2005));
+                    Thread local = new Thread(new LocalServer("efrenmanuel.es", 2005)); //Local server test, where the game server is running
                     local.start();
                     break;
 
