@@ -13,15 +13,14 @@ Current state:
   Client -> Can receive the ping from the real server and broadcast it
 
 Need to do:
-  *LobbyServer:
+ * LobbyServer:
     - Complete. informs the clients of the available servers and the server of the clients it needs to send info too
-  *Client:
+ * Client:
     - add switch to broadcast or not (only one should broadcast per real net even with multiple computers playing)
     - add functionality to receive game packets (Game data) 
     - add functionality to send the LobbyServer its ip public and port
         *?each packet will have to include a (4 bits) identifier of the client and we will only need one main client per net
-        
-    add  functionality to send tcp packets back to the ClientServer
+    -add  functionality to send tcp packets back to the ClientServer
    
  * ClientServer:
     - Send game packets to the client with its (4 bit) identifier and receive back
