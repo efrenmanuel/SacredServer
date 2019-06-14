@@ -45,9 +45,15 @@ public class ServerRegister implements Runnable {
                     serverUpdaterPool.execute(() ->
                     {
                         try {
-                            while (connection.getInputStream().read()!=-1);
+                            int tries=10;
+                            while (connection.getInputStream().read()!=-1 && tries>0){
+                                tries=10;
+                                Thread.sleep(1500);
+                            };
                         } catch (IOException ex) {
                             serverConnections.remove(connection.getRemoteSocketAddress().toString());
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ServerRegister.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         
                     }
