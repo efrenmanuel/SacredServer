@@ -5,7 +5,10 @@
  */
 package Remote;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,12 +24,12 @@ import java.util.logging.Logger;
  */
 public class ServerRegister implements Runnable {
 
-    private TreeMap<String, Socket> serverConnections;
+    private TreeMap<String, ServerInfo> serverConnections;
     private ServerSocket serverSocket;
     private boolean updating;
     private ThreadPoolExecutor serverUpdaterPool;
 
-    public ServerRegister(TreeMap<String, Socket> serverConnections, ServerSocket serverSocket, ThreadPoolExecutor serverUpdaterPool) {
+    public ServerRegister(TreeMap<String, ServerInfo> serverConnections, ServerSocket serverSocket, ThreadPoolExecutor serverUpdaterPool) {
         this.serverSocket = serverSocket;
         this.serverConnections = serverConnections;
         this.serverUpdaterPool=serverUpdaterPool;
@@ -38,10 +41,15 @@ public class ServerRegister implements Runnable {
         while (updating) {
             try {
                 Socket connection = serverSocket.accept();
+                System.out.println("Connected to the LocalServer");
                 if (!serverConnections.containsKey(connection.getRemoteSocketAddress().toString())) {
-                    serverConnections.put(connection.getRemoteSocketAddress().toString(), connection);
+                    BufferedReader input = new BufferedReader (new InputStreamReader (connection.getInputStream()));
+                    String[] serverData = input.readLine().split("INFOSEPARATOR2019");
+                    System.out.println("received "+serverData);
+                    ServerInfo serverInfo=new ServerInfo(serverData[0], Integer.parseInt(serverData[1]), 0);
+                    serverConnections.put(connection.getRemoteSocketAddress().toString(), serverInfo);
                     System.out.println("Registered this ip:" + connection.getRemoteSocketAddress().toString());
-                    
+                    System.out.println("With this info: "+serverInfo.toString());
                     serverUpdaterPool.execute(() ->
                     {
                         try {

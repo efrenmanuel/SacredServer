@@ -6,6 +6,8 @@
 package Local;
 
 import Resources.DAODatagramSocket;
+import Resources.DAOSocket;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -26,6 +28,7 @@ public class LocalServer implements Runnable {
 
     DAODatagramSocket datagramSocket;
     Socket socket;
+    DAOSocket dSocket;
     ArrayList<String> clientAddresses;
     String lobbyAddress;
     int port;
@@ -38,7 +41,7 @@ public class LocalServer implements Runnable {
      * @param clientAddress Address of the lobby server
      * @param port Port of the local Sacred server, Usually 2005
      */
-    public LocalServer(String lobbyAddress, int port) throws LobbyServerNotAvailable {
+    public LocalServer(String lobbyAddress,String serverName, int maxPlayers, int port) throws LobbyServerNotAvailable {
         try {
 
             datagramSocket = new DAODatagramSocket(new DatagramSocket(port));
@@ -46,9 +49,11 @@ public class LocalServer implements Runnable {
             this.port = port;
             this.lobbyAddress = lobbyAddress;
             try {
-                System.out.println("AAAAAA");
                 socket = new Socket(lobbyAddress, 2004);
-                System.out.println("AAAAAA");
+                DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+                outToServer.writeBytes(serverName+"INFOSEPARATOR2019"+maxPlayers+"\n");
+                System.out.println("sent "+serverName+"INFOSEPARATOR2019"+maxPlayers);
+                
             } catch (IOException ex) {
                 throw new LobbyServerNotAvailable(ex);
             }

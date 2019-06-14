@@ -27,9 +27,8 @@ import java.util.logging.Logger;
 public class LobbyServer implements Runnable{
 
     private ArrayList<InetAddress> clients;
-    private TreeMap<String, Socket> serverConnections;
+    private TreeMap<String, ServerInfo> serverConnections;
     private ServerSocket serverSocket;
-    private ServerSocket clientSocket;
     private ThreadPoolExecutor serverUpdaterPool;
 
     public LobbyServer(int serverPort, int clientPort){
@@ -37,7 +36,6 @@ public class LobbyServer implements Runnable{
             this.serverConnections = new TreeMap<>();
             this.clients = new ArrayList<>();
             serverSocket = new ServerSocket(serverPort);
-            clientSocket = new ServerSocket(clientPort);
             serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
         } catch (IOException ex) {
             Logger.getLogger(LobbyServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -54,7 +52,7 @@ public class LobbyServer implements Runnable{
         Thread serverUpdater = new Thread(new ServerRegister(serverConnections, serverSocket, serverUpdaterPool));
         serverUpdater.start();
         
-        while (true){
+       /* while (true){
             if (serverConnections.size()==0){
                 System.out.println("No connections");
             }else{
@@ -63,7 +61,7 @@ public class LobbyServer implements Runnable{
                     System.out.println(address);
                 }
             }
-        }
+        }*/
         
     }
 

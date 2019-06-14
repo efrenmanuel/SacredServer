@@ -41,7 +41,7 @@ public class TestingMain {
                 case 2:
                     Thread local;
                 try {
-                    local = new Thread(new LocalServer("efrenmanuel.es", 2005)); //Local server test, where the game server is running
+                    local = new Thread(new LocalServer("efrenmanuel.es","testserver",16, 2005)); //Local server test, where the game server is running
                     local.start();
                 } catch (LocalServer.LobbyServerNotAvailable ex) {
                     Logger.getLogger(TestingMain.class.getName()).log(Level.SEVERE, null, ex);
