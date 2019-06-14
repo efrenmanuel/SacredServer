@@ -5,7 +5,7 @@
  */
 package Local;
 
-import Remote.Server;
+import Remote.LobbyServer;
 import Resources.DAODatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;

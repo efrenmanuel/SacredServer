@@ -40,6 +40,7 @@ public class PingRelayer implements Runnable {
                 datagramSocket.receive(packet);
                 packet.setLength(packet.getLength());
                 packet.setPort(port);
+                System.out.println(packet.getData().toString());
                 for (String address : clientAddresses) {
                     packet.setAddress(InetAddress.getByName(address));
                     System.out.println("Sending ping to " + address);

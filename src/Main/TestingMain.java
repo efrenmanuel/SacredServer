@@ -7,9 +7,9 @@ package Main;
 
 import Local.LocalServer;
 import Local.Client;
+import Remote.LobbyServer;
 import Resources.DAOSocket;
 import Resources.DAODatagramSocket;
-import Resources.DaoServerSocket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.SocketException;
@@ -29,7 +29,7 @@ public class TestingMain {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         while (true) {
-            System.out.println("Input type of socket to test:\n 1.-Client\n 2.-Server");
+            System.out.println("Input type of socket to test:\n 1.-Client\n 2.-Server\n 3.- Lobby");
             switch (scan.nextInt()) {
                 case 1:
                     Thread client = new Thread(new Client("efrenmanuel.es", 2004)); //Client test, has to receive the data.
@@ -39,8 +39,18 @@ public class TestingMain {
                     }
                     //break;
                 case 2:
-                    Thread local = new Thread(new LocalServer("efrenmanuel.es", 2005)); //Local server test, where the game server is running
+                    Thread local;
+                try {
+                    local = new Thread(new LocalServer("efrenmanuel.es", 2005)); //Local server test, where the game server is running
                     local.start();
+                } catch (LocalServer.LobbyServerNotAvailable ex) {
+                    Logger.getLogger(TestingMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    break;
+                
+                case 3:
+                    Thread lobby = new Thread(new LobbyServer(2004, 200)); //Lobby server test, where the game server is running
+                    lobby.start();
                     break;
 
             }

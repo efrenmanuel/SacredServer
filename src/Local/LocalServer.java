@@ -11,6 +11,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -30,17 +31,27 @@ public class LocalServer implements Runnable {
     int port;
 
     /**
-     * Local Server that takes everything from the game server and distributes it to the clients and emulates the clients in the network with ips from 192.168.1.150 to 192.168.1.166 (max players is 66)
+     * Local Server that takes everything from the game server and distributes
+     * it to the clients and emulates the clients in the network with ips from
+     * 192.168.1.150 to 192.168.1.166 (max players is 66)
+     *
      * @param clientAddress Address of the lobby server
      * @param port Port of the local Sacred server, Usually 2005
      */
-    public LocalServer(String lobbyAddress, int port) {
+    public LocalServer(String lobbyAddress, int port) throws LobbyServerNotAvailable {
         try {
 
             datagramSocket = new DAODatagramSocket(new DatagramSocket(port));
-            this.clientAddresses=new ArrayList<>();
-            this.port=port;
-            this.lobbyAddress=lobbyAddress;
+            this.clientAddresses = new ArrayList<>();
+            this.port = port;
+            this.lobbyAddress = lobbyAddress;
+            try {
+                System.out.println("AAAAAA");
+                socket = new Socket(lobbyAddress, 2004);
+                System.out.println("AAAAAA");
+            } catch (IOException ex) {
+                throw new LobbyServerNotAvailable(ex);
+            }
         } catch (SocketException ex) {
             System.out.println(ex);
         }
@@ -54,4 +65,10 @@ public class LocalServer implements Runnable {
 
     }
 
+    public class LobbyServerNotAvailable extends Exception {
+
+        public LobbyServerNotAvailable(Throwable err) {
+            super("The specified server is not available", err);
+        }
+    }
 }
