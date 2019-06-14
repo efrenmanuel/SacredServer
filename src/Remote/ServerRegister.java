@@ -46,7 +46,7 @@ public class ServerRegister implements Runnable {
                     BufferedReader input = new BufferedReader (new InputStreamReader (connection.getInputStream()));
                     String[] serverData = input.readLine().split("INFOSEPARATOR2019");
                     System.out.println("received "+serverData);
-                    ServerInfo serverInfo=new ServerInfo(serverData[0], Integer.parseInt(serverData[1]), 0);
+                    ServerInfo serverInfo=new ServerInfo(serverData[0], Integer.parseInt(serverData[1]), Integer.parseInt(serverData[2]));
                     serverConnections.put(connection.getRemoteSocketAddress().toString(), serverInfo);
                     System.out.println("Registered this ip:" + connection.getRemoteSocketAddress().toString());
                     System.out.println("With this info: "+serverInfo.toString());
@@ -56,6 +56,12 @@ public class ServerRegister implements Runnable {
                             int tries=10;
                             while (connection.getInputStream().read()!=-1 && tries>0){
                                 tries=10;
+                                String line = input.readLine();
+                                if (line != null){
+                                    String[] newServerData= line.split("INFOSEPARATOR2019");
+                                    ServerInfo newServerInfo=new ServerInfo(newServerData[0], Integer.parseInt(newServerData[1]), Integer.parseInt(newServerData[2]));
+                                    serverConnections.replace(connection.getRemoteSocketAddress().toString(), newServerInfo);
+                                }
                                 Thread.sleep(1500);
                             };
                         } catch (IOException ex) {

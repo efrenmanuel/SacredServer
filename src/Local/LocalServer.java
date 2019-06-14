@@ -51,8 +51,8 @@ public class LocalServer implements Runnable {
             try {
                 socket = new Socket(lobbyAddress, 2004);
                 DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
-                outToServer.writeBytes(serverName+"INFOSEPARATOR2019"+maxPlayers+"\n");
-                System.out.println("sent "+serverName+"INFOSEPARATOR2019"+maxPlayers);
+                outToServer.writeBytes(serverName+"INFOSEPARATOR2019"+maxPlayers+"INFOSEPARATOR2019"+0+"\n");
+                System.out.println("sent "+serverName+"INFOSEPARATOR2019"+maxPlayers+"INFOSEPARATOR2019"+0);
                 
             } catch (IOException ex) {
                 throw new LobbyServerNotAvailable(ex);
