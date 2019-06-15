@@ -21,7 +21,7 @@ Current state:
 
 ### Need to do:
  * LobbyServer:
-    -None
+    - None
  * Client:
     - add switch to broadcast or not (only one should broadcast per real net even with multiple computers playing)
     - add functionality to receive tcp game packets (Game data)
