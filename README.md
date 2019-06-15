@@ -8,25 +8,28 @@ definitions:
   LobbyServer: server that only forwards the game info and client info to the GameClients
 
 Current state:
-```
-  Can send the ping from a main server (the same as the gameserver to the clients)
-  Lobby server -> none
-  Client -> Can receive the ping from the real server and broadcast it
-```
+
+### Done
+ * LobbyServer:
+    - Most of it. Some things might surge along the way.
+ * Client:
+    - receive the server info!
+    - Broadcast in the game server in the local net so the game sees it.
+ * ClientServer:
+    - Identify in the lobby server.
+    - Send the broadcast info to the clients connected.
 
 ### Need to do:
  * LobbyServer:
-    - Complete. informs the clients of the available servers and the server of the clients it needs to send info too
+    -None
  * Client:
     - add switch to broadcast or not (only one should broadcast per real net even with multiple computers playing)
-    - add functionality to receive game packets (Game data) 
-    - add functionality to send the LobbyServer its ip public and port
-        *?each packet will have to include a (4 bits) identifier of the client and we will only need one main client per net
+    - add functionality to receive tcp game packets (Game data)
     -add  functionality to send tcp packets back to the ClientServer
    
  * ClientServer:
-    - Send game packets to the client with its (4 bit) identifier and receive back
-      *emulate every Client with ips from (Probably personalizable?) 192.168.1.150 to .165 (50 + 16 max client (game cap)) and redirect the data back with its corresponding (4 bit) identifier
+    - Send game packets to the client 
+      *emulate every Client with ips from (Probably personalizable?) 192.168.1.150 to .165 (50 + 16 max client (game cap)) and redirect the data back to the real client's ip and port identifier
     
 ### notes
 I also have the suspicion that the code might be reusable to make lobbies of a lot of other games that only allow for lan games since it looks like a pretty much simple behavior
