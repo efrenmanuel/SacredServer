@@ -35,6 +35,10 @@ public class DAODatagramSocket {
         }
 
     }
+    
+    public InetAddress getInetAddress(){
+        return datagramSocket.getLocalAddress();
+    }
 
 
 

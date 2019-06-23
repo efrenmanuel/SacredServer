@@ -5,8 +5,8 @@
  */
 package Main;
 
-import Local.LocalServer;
-import Local.Client;
+import Local.Server.LocalServer;
+import Local.ClientPackage.Client;
 import Remote.LobbyServer;
 import Resources.DAOSocket;
 import Resources.DAODatagramSocket;
@@ -32,13 +32,13 @@ public class TestingMain {
             System.out.println("Input type of socket to test:\n 1.-Client\n 2.-Server\n 3.- Lobby");
             switch (scan.nextInt()) {
                 case 1:
-                    Thread client = new Thread(new Client("efrenmanuel.es", 2006)); //Client test, has to receive the data.
+                    Thread client = new Thread(new Client("efrenmanuel.es", 2008)); //Client test, has to receive the data.
                     client.start();
 
                     break;
                 case 2:
                     try {
-                        Thread local = new Thread(new LocalServer("efrenmanuel.es", "testserver", 16, 2005)); //Local server test, where the game server is running
+                        Thread local = new Thread(new LocalServer("efrenmanuel.es", "testserver", 16, 2003)); //Local server test, where the game server is running
                         local.start();
                     } catch (LocalServer.LobbyServerNotAvailable ex) {
                         Logger.getLogger(TestingMain.class.getName()).log(Level.SEVERE, null, ex);
