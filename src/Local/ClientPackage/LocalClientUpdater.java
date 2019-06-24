@@ -23,13 +23,13 @@ import java.util.logging.Logger;
  */
 public class LocalClientUpdater implements Runnable {
 
-    private Map<InetAddress, Socket> clients;
+    private Map<String, Socket> clients;
     private ServerSocket serverSocket;
     private boolean updating;
 
     private ThreadPoolExecutor clientUpdaterPool;
 
-    public LocalClientUpdater(Map<InetAddress, Socket> clients, ServerSocket serverSocket) {
+    public LocalClientUpdater(Map<String, Socket> clients, ServerSocket serverSocket) {
         this.clients = clients;
         this.serverSocket = serverSocket;
         updating = true;
@@ -44,8 +44,8 @@ public class LocalClientUpdater implements Runnable {
                 System.out.println("Listening in port 2006");
                 System.out.println("listening in:" + serverSocket.getInetAddress().getHostAddress());
                 Socket connection = serverSocket.accept();
-                System.out.println("Client connected");
-                clients.put(connection.getInetAddress(), connection);
+                System.out.println("Game connected");
+                clients.put(connection.getInetAddress().getHostAddress(), connection);
 
                 clientUpdaterPool.execute(()
                         -> {

@@ -32,7 +32,7 @@ public class TestingMain {
             System.out.println("Input type of socket to test:\n 1.-Client\n 2.-Server\n 3.- Lobby");
             switch (scan.nextInt()) {
                 case 1:
-                    Thread client = new Thread(new Client("efrenmanuel.es", 2008)); //Client test, has to receive the data.
+                    Thread client = new Thread(new Client("efrenmanuel.es", 2003)); //Client test, has to receive the data.
                     client.start();
 
                     break;
@@ -46,7 +46,7 @@ public class TestingMain {
                     break;
 
                 case 3:
-                    Thread lobby = new Thread(new LobbyServer(2004, 200)); //Lobby server test, where the lobby of servers is running
+                    Thread lobby = new Thread(new LobbyServer(2004)); //Lobby server test, where the lobby of servers is running
                     lobby.start();
                     break;
 

@@ -25,41 +25,60 @@ import java.util.logging.Logger;
  */
 public class RemoteClientUpdater implements Runnable {
 
-    private Map<InetAddress, Socket> clients;
-    private Map<InetAddress, Socket> clientsForOutside;
+    private Map<String, Socket> clients;
+    private Map<String, Socket> clientsForOutside;
     private boolean updating;
     private String serverIP;
     private int serverPort;
+    private int startPort;
     private ThreadPoolExecutor clientUpdaterPool;
 
-    public RemoteClientUpdater(Map<InetAddress, Socket> clients, Map<InetAddress, Socket> clientsForOutside, String serverIP, int serverPort) {
+    public RemoteClientUpdater(Map<String, Socket> clients, Map<String, Socket> clientsForOutside, String serverIP, int serverPort) {
         this.clients = clients;
         this.clientsForOutside = clientsForOutside;
-        this.serverIP = serverIP;
         this.serverPort = serverPort;
         updating = true;
+        this.serverIP = serverIP;
         this.clientUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        this.startPort = 2008;
 
     }
 
     @Override
     public void run() {
         while (updating) {
-            for (InetAddress address : clients.keySet()) {
+            for (String address : clients.keySet()) {
+                System.out.println("Processing this client: " + address);
                 if (!clientsForOutside.containsKey(address)) {
                     try {
                         Socket connection = new Socket(InetAddress.getByName(serverIP), serverPort);
                         clientsForOutside.put(address, connection);
                         clientUpdaterPool.execute(()
                                 -> {
+                            int tries = 10;
                             try {
-                                int tries = 10;
+                                while (tries > 0) {
+                                    if (clients.get(address).getInputStream().read() == -1) {
+                                        tries -= 1;
+                                    } else {
+                                        tries = 10;
+                                    }
+                                    Thread.sleep(150);
+                                }
+                                clients.remove(address);
+                            } catch (InterruptedException | IOException ex) {
+                                clients.remove(address);
+                            }
+                        }
+                        );
+                        clientUpdaterPool.execute(()
+                                -> {
+                            try {
 
                                 while (updating) {
-                                    tries = 10;
                                     Socket listenTo = clientsForOutside.get(address);
                                     InputStream input = listenTo.getInputStream();
-                                    
+
                                     Socket sendTo = clients.get(address);
                                     OutputStream output = sendTo.getOutputStream();
                                     byte[] buffer = new byte[input.available()];
@@ -78,10 +97,7 @@ public class RemoteClientUpdater implements Runnable {
                         clientUpdaterPool.execute(()
                                 -> {
                             try {
-                                int tries = 10;
-
                                 while (updating) {
-                                    tries = 10;
                                     Socket listenTo = clients.get(address);
                                     InputStream input = listenTo.getInputStream();
 
@@ -93,10 +109,8 @@ public class RemoteClientUpdater implements Runnable {
 
                                     Thread.sleep(100);
                                 }
-                            } catch (IOException ex) {
-                                Logger.getLogger(RemoteClientUpdater.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(RemoteClientUpdater.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException | InterruptedException ex) {
+                                System.out.println("ERROR: "+ex);
                             }
                         }
                         );
@@ -105,6 +119,12 @@ public class RemoteClientUpdater implements Runnable {
                     }
                 }
 
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RemoteClientUpdater.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

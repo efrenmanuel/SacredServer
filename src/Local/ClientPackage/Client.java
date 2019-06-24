@@ -64,11 +64,11 @@ public class Client implements Runnable {
         serverListUpdater.start();
         
         try {
-            Thread.sleep(50);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Connect(socketServer);
+        socketServer=Connect(socketServer);
         Thread pingReceiver = new Thread(new PingReceiver(datagramSocket));
         pingReceiver.start();
         Thread serverEmulator = new Thread(new ServerEmulator(socketServer, datagramSocket.getInetAddress()));
@@ -85,15 +85,16 @@ public class Client implements Runnable {
         }
     }
     
-    public void Connect(Socket socket){
+    public Socket Connect(Socket socket){
         try {
             System.out.println("Connecting to "+serverList.get(serverList.keySet().toArray()[0]).getIp());
             socket= new Socket(serverList.get(serverList.keySet().toArray()[0]).getIp(), serverList.get(serverList.keySet().toArray()[0]).getPort());
-            
             System.out.println("Connected");
+            return socket;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
 }

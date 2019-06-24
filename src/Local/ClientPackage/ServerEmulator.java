@@ -27,9 +27,9 @@ import java.net.SocketAddress;
 public class ServerEmulator implements Runnable {
 
     private ServerSocket serverSocket;
-    private Socket socket;
-    private Map<InetAddress, Socket> clients;
-    private Map<InetAddress, Socket> clientsForOutside;
+    private Socket socketToServer;
+    private Map<String, Socket> clients;
+    private Map<String, Socket> clientsForOutside;
     private ThreadPoolExecutor serverUpdaterPool;
 
     public ServerEmulator(Socket socket, InetAddress address){
@@ -37,8 +37,9 @@ public class ServerEmulator implements Runnable {
             
             System.out.println("opening port 2006");
             this.serverSocket = new ServerSocket(2006);
-            this.socket = socket;
+            this.socketToServer = socket;
             this.clients = new TreeMap<>();
+            this.clientsForOutside = new TreeMap<>();
             this.serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
         } catch (IOException ex) {
             Logger.getLogger(ServerEmulator.class.getName()).log(Level.SEVERE, null, ex);
@@ -49,7 +50,9 @@ public class ServerEmulator implements Runnable {
     public void run() {
         Thread localClientUpdater = new Thread(new LocalClientUpdater(clients, serverSocket));
         localClientUpdater.start();
-
+        System.out.println(socketToServer.getInetAddress().getHostAddress());
+        Thread remoteClientUpdater = new Thread(new RemoteClientUpdater(clients, clientsForOutside, socketToServer.getInetAddress().getHostAddress(), 2003));
+        remoteClientUpdater.start();
     }
     
     

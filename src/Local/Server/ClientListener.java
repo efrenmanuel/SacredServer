@@ -32,7 +32,7 @@ public class ClientListener implements Runnable {
 
     public ClientListener(ServerSocket serversocket, TreeMap<String, Socket> clientConnections) {
         this.serverSocket = serversocket;
-        this.clientConnections=clientConnections;
+        this.clientConnections = clientConnections;
         this.updating = true;
         this.clientUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
     }
@@ -51,11 +51,15 @@ public class ClientListener implements Runnable {
                             -> {
                         try {
                             int tries = 10;
-                            while (connection.getInputStream().read() != -1 && tries > 0) {
-                                tries = 10;
-                                String line = input.readLine();
-                                if (line != null) {
-                                    clientConnections.replace(connection.getRemoteSocketAddress().toString(), connection);
+                            while (tries > 0) {
+                                if (connection.getInputStream().read() == -1) {
+                                    tries -= 1;
+                                } else {
+                                    tries = 10;
+                                    String line = input.readLine();
+                                    if (line != null) {
+                                        clientConnections.replace(connection.getRemoteSocketAddress().toString(), connection);
+                                    }
                                 }
                                 Thread.sleep(1500);
                             }

@@ -31,7 +31,7 @@ public class LobbyServer implements Runnable{
     private ServerSocket serverSocket;
     private ThreadPoolExecutor serverUpdaterPool;
 
-    public LobbyServer(int serverPort, int clientPort){
+    public LobbyServer(int serverPort){
         try {
             this.serverConnections = new TreeMap<>();
             this.clients = new ArrayList<>();
