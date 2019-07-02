@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Lobby server to keep all the server IP's in a place that the clients can connect to
  * @author efren
  */
 public class LobbyServer implements Runnable{
@@ -30,13 +30,18 @@ public class LobbyServer implements Runnable{
     private TreeMap<String, ServerInfo> serverConnections;
     private ServerSocket serverSocket;
     private ThreadPoolExecutor serverUpdaterPool;
+    private boolean running;
 
+    /**
+     * Main lobby server
+     * @param serverPort Port that the lobby will listen to. it has to have been forwarded towards the server
+     */
     public LobbyServer(int serverPort){
         try {
-            this.serverConnections = new TreeMap<>();
-            this.clients = new ArrayList<>();
-            serverSocket = new ServerSocket(serverPort);
-            serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+            this.serverConnections = new TreeMap<>(); // Collection where we will store the servers
+            this.clients = new ArrayList<>();         // Collection where we will store the clients
+            serverSocket = new ServerSocket(serverPort); //Socket that the lobby will listen to
+            serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool(); //Pool to execute the threads where we update all the info
         } catch (IOException ex) {
             Logger.getLogger(LobbyServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,20 +54,9 @@ public class LobbyServer implements Runnable{
 
     @Override
     public void run() {
-        Thread serverUpdater = new Thread(new ServerRegister(serverConnections, serverSocket, serverUpdaterPool));
+        running=true;
+        Thread serverUpdater = new Thread(new ConnectionRegister(running, serverConnections, serverSocket, serverUpdaterPool));
         serverUpdater.start();
-        
-       /* while (true){
-            if (serverConnections.size()==0){
-                System.out.println("No connections");
-            }else{
-                System.out.println(serverConnections.size()+" connections");
-                for (String address:serverConnections.keySet()){
-                    System.out.println(address);
-                }
-            }
-        }*/
-        
     }
 
 }

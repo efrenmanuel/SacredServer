@@ -3,23 +3,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/ServerInfo.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/ServerListUpdater.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Resources/DAOSocket.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/PingReceiver.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/LocalClientUpdater.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Resources/DAODatagramSocket.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/RemoteClientUpdater.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/ServerRegister.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/LobbyServer.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Main/TestingMain.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/ClientEmulator.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/ClientListener.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/Client.java</file>
             <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/ServerEmulator.java</file>
-            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/PingRelayer.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Resources/DAOSocket.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/ServerListUpdater.java</file>
             <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/ClientInfo.java</file>
             <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/LocalServer.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/ServerInfo.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/Client.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/RemoteClientUpdater.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/LocalClientUpdater.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/ClientPackage/PingReceiver.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/ClientEmulator.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Main/TestingMain.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/PingRelayer.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/LobbyServer.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Resources/DAODatagramSocket.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Remote/ServerRegister.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Main/SelectionScreen.java</file>
+            <file>file:/C:/Users/efren/Documents/NetBeansProjects/mavenproject1/JavaApplication1/src/Local/Server/ClientListener.java</file>
         </group>
     </open-files>
 </project-private>

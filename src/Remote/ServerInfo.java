@@ -16,6 +16,14 @@ public class ServerInfo {
     private String ip;
     private int port;
 
+    /**
+     * Information about the server
+     * @param name name of the server
+     * @param maxPlayers maximum number of players
+     * @param currentPlayers current number of players
+     * @param ip ip of the server
+     * @param port port that the server is listening in
+     */
     public ServerInfo(String name, int maxPlayers, int currentPlayers, String ip, int port) {
         this.name = name;
         this.maxPlayers = maxPlayers;

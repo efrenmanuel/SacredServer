@@ -23,15 +23,14 @@ import java.util.logging.Logger;
  *
  * @author efren
  */
-public class Client implements Runnable {
+public class Client{
 
     private DAODatagramSocket datagramSocket;
     private Map<String, ServerInfo> serverList;
     private String localAddress;
-    private String lobbyAddress;
     private Socket socketLobby;
     private Socket socketServer;
-    private int port;
+    private boolean running;
 
     /**
      * Client that receives the pings and broadcasts them in the local net so
@@ -41,15 +40,19 @@ public class Client implements Runnable {
      * @param lobbyAddress Address of the lobby server
      * @param port Port of the local Sacred server, Usually 2005
      */
-    public Client(String lobbyAddress, int port) {
+    public Client(String lobbyAddress, int port, int portUDP) {
         try {
             DatagramSocket socketForProbing = new DatagramSocket();
             socketForProbing.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            this.lobbyAddress = lobbyAddress;
+
             localAddress = socketForProbing.getLocalAddress().getHostAddress();//get this pc's local address
-            datagramSocket = new DAODatagramSocket(new DatagramSocket(2008, InetAddress.getByName(localAddress))); //socket in this pc's local address so it can get all the game data
-            socketLobby = new Socket(lobbyAddress, 2004);
+            datagramSocket = new DAODatagramSocket(new DatagramSocket(portUDP, InetAddress.getByName(localAddress))); //socket in this pc's local address so it can get all the game data
+
+            socketLobby = new Socket(lobbyAddress, port); //Socket to be able to connect tot he lobby and get the server info
+
             serverList = new TreeMap<>();
+            
+            updateServers();
         } catch (SocketException | UnknownHostException ex) {
             System.out.println(ex);
         } catch (IOException ex) {
@@ -58,38 +61,35 @@ public class Client implements Runnable {
 
     }
 
-    @Override
-    public void run() {
+    public final void updateServers() {
         Thread serverListUpdater = new Thread(new ServerListUpdater(socketLobby, serverList));
         serverListUpdater.start();
-        
+
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        socketServer=Connect(socketServer);
-        Thread pingReceiver = new Thread(new PingReceiver(datagramSocket));
-        pingReceiver.start();
-        Thread serverEmulator = new Thread(new ServerEmulator(socketServer, datagramSocket.getInetAddress()));
-        serverEmulator.start();
-        soutServer();
-        
 
     }
 
-    public void soutServer() {
-        for (String server : serverList.keySet()) {
-            System.out.println("ip: " + server);
-            System.out.println("info: " + serverList.get(server).toString());
-        }
-    }
-    
-    public Socket Connect(Socket socket){
+    /**
+     * Connect to a remote server
+     * @param address Address of the server that we are connecting to
+     * @param socket socket that the server is listening to
+     * @return connected socket
+     */
+    public Socket Connect(String address) {
         try {
-            System.out.println("Connecting to "+serverList.get(serverList.keySet().toArray()[0]).getIp());
-            socket= new Socket(serverList.get(serverList.keySet().toArray()[0]).getIp(), serverList.get(serverList.keySet().toArray()[0]).getPort());
+            //System.out.println("Connecting to " + address);
+            running=true;
+            Socket socket;
+            socket = new Socket(serverList.get(address).getIp(), serverList.get(address).getPort());
             System.out.println("Connected");
+            Thread serverEmulator = new Thread(new ServerEmulator(running, socketServer, datagramSocket.getInetAddress(), serverList.get(address).getPort()));
+            serverEmulator.start();
+            Thread pingReceiver = new Thread(new PingReceiver(running, datagramSocket));
+            pingReceiver.start();
             return socket;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

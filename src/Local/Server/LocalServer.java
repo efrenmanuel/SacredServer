@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,7 @@ import java.util.logging.Logger;
  *
  * @author efren
  */
-public class LocalServer implements Runnable {
+public class LocalServer {
 
     DAODatagramSocket datagramSocket;
     ServerSocket serverSocket;
@@ -39,32 +40,36 @@ public class LocalServer implements Runnable {
     ArrayList<String> clientAddresses;
     String lobbyAddress;
     int port;
-    private TreeMap<String, Socket> clientConnections;
-    private TreeMap<String, Socket> fakeClients;
+    private ConcurrentHashMap<String, Socket> clientConnections;
+    private ConcurrentHashMap<String, Socket> fakeClients;
+    Thread pingRelayer, clientListener, clientEmulator;
+    boolean running;
 
     /**
      * Local Server that takes everything from the game server and distributes
-     * it to the clients and emulates the clients in the network with ips from
-     * 192.168.1.150 to 192.168.1.166 (max players is 66)
+     * it to the clients as well as emulating the clients in the network with
+     * ports from 2008 onwards
      *
-     * @param lobbyAddress
-     * @param serverName
-     * @param maxPlayers
-     * @param port Port of the local Sacred server, Usually 2005
-     * @throws Local.Server.LocalServer.LobbyServerNotAvailable
+     * @param lobbyAddress Address of the lobby to register as online
+     * @param serverName Name that the server will have
+     * @param maxPlayers Number of maximum players
+     * @param port Port That this server will listen to
+     * @throws Local.Server.LocalServer.LobbyServerNotAvailable The lobby isn't
+     * available
      */
     public LocalServer(String lobbyAddress, String serverName, int maxPlayers, int port) throws LobbyServerNotAvailable {
-        clientConnections = new TreeMap<>();
-        this.fakeClients = new TreeMap<>();
+        clientConnections = new ConcurrentHashMap<>();
+        this.fakeClients = new ConcurrentHashMap<>();
         try {
             String systemipaddress;
+  
+            serverSocket = new ServerSocket(port); // Opening the socket to let the clients connect
 
-            serverSocket = new ServerSocket(port);
-            datagramSocket = new DAODatagramSocket(new DatagramSocket(2005));
-            this.clientAddresses = new ArrayList<>();
+            datagramSocket = new DAODatagramSocket(new DatagramSocket(2005)); // UDP socket that the game sends ping to let itself be known in the network, always 2005
+            this.clientAddresses = new ArrayList<>(); // List of connected clients
             this.port = port;
             this.lobbyAddress = lobbyAddress;
-            try {
+            try { //We find the public address, in case the lobby and server share network
                 URL url_name = new URL("http://bot.whatismyipaddress.com");
 
                 BufferedReader sc = new BufferedReader(new InputStreamReader(url_name.openStream()));
@@ -74,16 +79,16 @@ public class LocalServer implements Runnable {
             } catch (IOException e) {
                 systemipaddress = "Cannot Execute Properly";
             }
-            System.out.println("Public IP Address: " + systemipaddress + "\n");
+            //System.out.println("Public IP Address: " + systemipaddress + "\n");
             try {
-                socket = new Socket(lobbyAddress, 2004);
-                DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
-                outToServer.writeBytes("server\n");
-                System.out.println("sent server");
-                outToServer.writeBytes(serverName + "INFOSEPARATOR2019" + maxPlayers + "INFOSEPARATOR2019" + 0 + "INFOSEPARATOR2019" + systemipaddress + "INFOSEPARATOR2019" + port + "\n");
-                System.out.println("sent " + serverName + "INFOSEPARATOR2019" + maxPlayers + "INFOSEPARATOR2019" + 0 + "INFOSEPARATOR2019" + systemipaddress + "INFOSEPARATOR2019" + port + "\n");
+                socket = new Socket(lobbyAddress, 2004); // We open a client socket to connect tot the lobby
+                DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream()); // Output stream to send strings to the lobby
+                outToServer.writeBytes("server\n"); // Identifying as server
+                //System.out.println("sent server");
+                outToServer.writeBytes(serverName + "INFOSEPARATOR2019" + maxPlayers + "INFOSEPARATOR2019" + 0 + "INFOSEPARATOR2019" + systemipaddress + "INFOSEPARATOR2019" + port + "\n"); // Sending the server info
+                //System.out.println("sent " + serverName + "INFOSEPARATOR2019" + maxPlayers + "INFOSEPARATOR2019" + 0 + "INFOSEPARATOR2019" + systemipaddress + "INFOSEPARATOR2019" + port + "\n");
             } catch (IOException ex) {
-                throw new LobbyServerNotAvailable(ex);
+                throw new LobbyServerNotAvailable(ex); //Oops! that lobby server must be offline!
             }
         } catch (SocketException ex) {
             Logger.getLogger(LocalServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,18 +97,22 @@ public class LocalServer implements Runnable {
         }
     }
 
-    @Override
     public void run() {
-        Thread pingRelayer = new Thread(new PingRelayer(datagramSocket, clientConnections, 2004)); //2004 port for the remote server
+        running=true;
+        Thread pingRelayer = new Thread(new PingRelayer(running, datagramSocket, clientConnections, 2008));
         pingRelayer.start();
-        System.out.println("Started relayer");
-        Thread clientListener = new Thread(new ClientListener(serverSocket, clientConnections));
+        //System.out.println("Started relayer");
+        Thread clientListener = new Thread(new ClientListener(running, serverSocket, clientConnections));
         clientListener.start();
-        System.out.println("Started listener");
-        Thread clientEmulator = new Thread(new ClientEmulator(serverSocket, clientConnections, fakeClients, 2006, 150));
+        //System.out.println("Started listener");
+        Thread clientEmulator = new Thread(new ClientEmulator(running, clientConnections, fakeClients, 2006, 150));
         clientEmulator.start();
-        System.out.println("Started emulator");
+        //System.out.println("Started emulator");
 
+    }
+    
+    public void stop(){
+        running=false;
     }
 
     public class LobbyServerNotAvailable extends Exception {

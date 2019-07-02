@@ -13,66 +13,48 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Class that listens for clients
  * @author efren
  */
 public class ClientListener implements Runnable {
 
-    private TreeMap<String, Socket> clientConnections;
+    private ConcurrentHashMap<String, Socket> clientConnections;
     ServerSocket serverSocket;
-    boolean updating;
+    boolean running;
 
     private ThreadPoolExecutor clientUpdaterPool;
-
-    public ClientListener(ServerSocket serversocket, TreeMap<String, Socket> clientConnections) {
+    
+    /**
+     * 
+     * @param serversocket socket that the server will listen to
+     * @param clientConnections collection of all the clients
+     */
+    public ClientListener(boolean running, ServerSocket serversocket, ConcurrentHashMap<String, Socket> clientConnections) {
         this.serverSocket = serversocket;
         this.clientConnections = clientConnections;
-        this.updating = true;
+        this.running = running;
         this.clientUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
     }
 
     @Override
     public void run() {
-        while (updating) {
+        while (running) {
             try {
-                Socket connection = serverSocket.accept();
-                System.out.println("Connected to the LocalServer");
-                BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                if (!clientConnections.containsKey(connection.getRemoteSocketAddress().toString())) {
-                    clientConnections.put(connection.getRemoteSocketAddress().toString(), connection);
-                    System.out.println("Registered this ip:" + connection.getRemoteSocketAddress().toString());
-                    clientUpdaterPool.execute(()
-                            -> {
-                        try {
-                            int tries = 10;
-                            while (tries > 0) {
-                                if (connection.getInputStream().read() == -1) {
-                                    tries -= 1;
-                                } else {
-                                    tries = 10;
-                                    String line = input.readLine();
-                                    if (line != null) {
-                                        clientConnections.replace(connection.getRemoteSocketAddress().toString(), connection);
-                                    }
-                                }
-                                Thread.sleep(1500);
-                            }
-                        } catch (IOException ex) {
-                            clientConnections.remove(connection.getRemoteSocketAddress().toString());
-                        } catch (InterruptedException ex) {
-                            clientConnections.remove(connection.getRemoteSocketAddress().toString());
-                        }
+                Socket connection = serverSocket.accept(); //A client connects
+                //System.out.println("Connected to the LocalServer");
+                if (!clientConnections.containsKey(connection.getRemoteSocketAddress().toString())) { //If this client doesn't exist already
+                    clientConnections.put(connection.getRemoteSocketAddress().toString(), connection); //Create a new client with it's info
+                    //System.out.println("Registered this ip:" + connection.getRemoteSocketAddress().toString());
 
-                    }
-                    );
-                } else {
-                    System.out.println("This ip reconnected:" + connection.getRemoteSocketAddress().toString());
+                } else { //If the client was already in
+                    //System.out.println("This ip reconnected:" + connection.getRemoteSocketAddress().toString()); ()
 
                 }
 

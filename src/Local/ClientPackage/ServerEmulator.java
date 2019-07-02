@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -28,19 +29,23 @@ public class ServerEmulator implements Runnable {
 
     private ServerSocket serverSocket;
     private Socket socketToServer;
-    private Map<String, Socket> clients;
-    private Map<String, Socket> clientsForOutside;
+    private ConcurrentHashMap<String, Socket> clients;
+    private ConcurrentHashMap<String, Socket> clientsForOutside;
     private ThreadPoolExecutor serverUpdaterPool;
+    private boolean running;
+    private int serverPort;
 
-    public ServerEmulator(Socket socket, InetAddress address){
+    public ServerEmulator(boolean running, Socket socket, InetAddress address, int serverPort) {
         try {
-            
+
             System.out.println("opening port 2006");
-            this.serverSocket = new ServerSocket(2006);
+            this.serverSocket = new ServerSocket(2006); //the default sacred game port
             this.socketToServer = socket;
-            this.clients = new TreeMap<>();
-            this.clientsForOutside = new TreeMap<>();
+            this.clients = new ConcurrentHashMap<>();
+            this.clientsForOutside = new ConcurrentHashMap<>();
             this.serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+            this.running = running;
+            this.serverPort = serverPort;
         } catch (IOException ex) {
             Logger.getLogger(ServerEmulator.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -48,13 +53,11 @@ public class ServerEmulator implements Runnable {
 
     @Override
     public void run() {
-        Thread localClientUpdater = new Thread(new LocalClientUpdater(clients, serverSocket));
+        Thread localClientUpdater = new Thread(new LocalClientUpdater(running, clients, serverSocket));
         localClientUpdater.start();
         System.out.println(socketToServer.getInetAddress().getHostAddress());
-        Thread remoteClientUpdater = new Thread(new RemoteClientUpdater(clients, clientsForOutside, socketToServer.getInetAddress().getHostAddress(), 2003));
+        Thread remoteClientUpdater = new Thread(new RemoteClientUpdater(running, clients, clientsForOutside, socketToServer.getInetAddress().getHostAddress(), serverPort));
         remoteClientUpdater.start();
     }
-    
-    
 
 }
