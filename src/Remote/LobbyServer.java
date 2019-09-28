@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
  * Lobby server to keep all the server IP's in a place that the clients can connect to
  * @author efren
  */
-public class LobbyServer implements Runnable{
+public class LobbyServer{
 
     private ArrayList<InetAddress> clients;
     private TreeMap<String, ServerInfo> serverConnections;
@@ -36,12 +37,13 @@ public class LobbyServer implements Runnable{
      * Main lobby server
      * @param serverPort Port that the lobby will listen to. it has to have been forwarded towards the server
      */
-    public LobbyServer(int serverPort){
+    public LobbyServer(boolean running, int serverPort){
         try {
             this.serverConnections = new TreeMap<>(); // Collection where we will store the servers
             this.clients = new ArrayList<>();         // Collection where we will store the clients
             serverSocket = new ServerSocket(serverPort); //Socket that the lobby will listen to
             serverUpdaterPool = (ThreadPoolExecutor) Executors.newCachedThreadPool(); //Pool to execute the threads where we update all the info
+            this.running=running;
         } catch (IOException ex) {
             Logger.getLogger(LobbyServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -52,11 +54,13 @@ public class LobbyServer implements Runnable{
         return clients;
     }
 
-    @Override
     public void run() {
-        running=true;
         Thread serverUpdater = new Thread(new ConnectionRegister(running, serverConnections, serverSocket, serverUpdaterPool));
         serverUpdater.start();
+    }
+    
+    public Collection<ServerInfo> getServers(){
+        return serverConnections.values();
     }
 
 }

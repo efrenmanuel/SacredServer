@@ -17,6 +17,8 @@ public class SelectionScreen extends javax.swing.JFrame {
     public SelectionScreen() {
         initComponents();
         setVisible(true);
+        lobbyWindow=new LobbyWindow();
+        serverWindow=new ServerWindow();
     }
 
     /**
@@ -28,21 +30,144 @@ public class SelectionScreen extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Lobby = new javax.swing.JPanel();
+        startLobby = new javax.swing.JButton();
+        Client = new javax.swing.JPanel();
+        startClient = new javax.swing.JButton();
+        Server = new javax.swing.JPanel();
+        startServer = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        Lobby.setBackground(new java.awt.Color(210, 210, 210));
+
+        startLobby.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        startLobby.setText("Lobby");
+        startLobby.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                startLobbyMouseClicked(evt);
+            }
+        });
+        startLobby.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startLobbyActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout LobbyLayout = new javax.swing.GroupLayout(Lobby);
+        Lobby.setLayout(LobbyLayout);
+        LobbyLayout.setHorizontalGroup(
+            LobbyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LobbyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startLobby, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        LobbyLayout.setVerticalGroup(
+            LobbyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(LobbyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startLobby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        Client.setBackground(new java.awt.Color(210, 210, 210));
+
+        startClient.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        startClient.setText("Client");
+
+        javax.swing.GroupLayout ClientLayout = new javax.swing.GroupLayout(Client);
+        Client.setLayout(ClientLayout);
+        ClientLayout.setHorizontalGroup(
+            ClientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ClientLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startClient, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        ClientLayout.setVerticalGroup(
+            ClientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ClientLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startClient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        Server.setBackground(new java.awt.Color(210, 210, 210));
+
+        startServer.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        startServer.setText("Server");
+        startServer.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                startServerStateChanged(evt);
+            }
+        });
+        startServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startServerActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ServerLayout = new javax.swing.GroupLayout(Server);
+        Server.setLayout(ServerLayout);
+        ServerLayout.setHorizontalGroup(
+            ServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ServerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startServer, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        ServerLayout.setVerticalGroup(
+            ServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ServerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(startServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 533, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Lobby, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Server, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(Client, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 494, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Client, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Lobby, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Server, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void startLobbyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startLobbyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_startLobbyActionPerformed
+
+    private void startLobbyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startLobbyMouseClicked
+        lobbyWindow.setVisible(true);
+    }//GEN-LAST:event_startLobbyMouseClicked
+
+    private void startServerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_startServerStateChanged
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_startServerStateChanged
+
+    private void startServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerActionPerformed
+        serverWindow.setVisible(true);
+    }//GEN-LAST:event_startServerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -80,5 +205,13 @@ public class SelectionScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Client;
+    private javax.swing.JPanel Lobby;
+    private javax.swing.JPanel Server;
+    private javax.swing.JButton startClient;
+    private javax.swing.JButton startLobby;
+    private javax.swing.JButton startServer;
     // End of variables declaration//GEN-END:variables
+    LobbyWindow lobbyWindow;
+    ServerWindow serverWindow;
 }

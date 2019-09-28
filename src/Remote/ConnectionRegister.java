@@ -48,6 +48,7 @@ public class ConnectionRegister implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Started Lobby");
         while (running) {
             try {
                 Socket connection = serverSocket.accept(); //Here we accept the server/client connection

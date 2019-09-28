@@ -22,6 +22,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ public class LocalServer {
     DAOSocket dSocket;
     ArrayList<String> clientAddresses;
     String lobbyAddress;
+    int lobbyPort;
     int port;
     private ConcurrentHashMap<String, Socket> clientConnections;
     private ConcurrentHashMap<String, Socket> fakeClients;
@@ -57,7 +59,7 @@ public class LocalServer {
      * @throws Local.Server.LocalServer.LobbyServerNotAvailable The lobby isn't
      * available
      */
-    public LocalServer(String lobbyAddress, String serverName, int maxPlayers, int port) throws LobbyServerNotAvailable {
+    public LocalServer(String lobbyAddress,int lobbyPort, String serverName, int maxPlayers, int port) throws LobbyServerNotAvailable {
         clientConnections = new ConcurrentHashMap<>();
         this.fakeClients = new ConcurrentHashMap<>();
         try {
@@ -69,6 +71,7 @@ public class LocalServer {
             this.clientAddresses = new ArrayList<>(); // List of connected clients
             this.port = port;
             this.lobbyAddress = lobbyAddress;
+            this.lobbyPort = lobbyPort;
             try { //We find the public address, in case the lobby and server share network
                 URL url_name = new URL("http://bot.whatismyipaddress.com");
 
@@ -81,7 +84,7 @@ public class LocalServer {
             }
             //System.out.println("Public IP Address: " + systemipaddress + "\n");
             try {
-                socket = new Socket(lobbyAddress, 2004); // We open a client socket to connect tot the lobby
+                socket = new Socket(lobbyAddress, lobbyPort); // We open a client socket to connect tot the lobby
                 DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream()); // Output stream to send strings to the lobby
                 outToServer.writeBytes("server\n"); // Identifying as server
                 //System.out.println("sent server");
@@ -120,5 +123,14 @@ public class LocalServer {
         public LobbyServerNotAvailable(Throwable err) {
             super("The specified server is not available", err);
         }
+    }
+    
+    public Map<String,String> getClients(){
+        Map<String,String> clientInfo=new TreeMap<>();
+        for (String clientAddress: clientConnections.keySet()){
+            clientInfo.put(clientAddress, fakeClients.get(clientAddress).getPort()+"");
+        }
+        
+        return clientInfo;
     }
 }

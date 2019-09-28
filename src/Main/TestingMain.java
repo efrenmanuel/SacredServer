@@ -37,7 +37,7 @@ public class TestingMain {
                     break;
                 case 2:
                     try {
-                        LocalServer local=new LocalServer("efrenmanuel.es", "testserver", 16, 2003); //Local server test, where the game server is running
+                        LocalServer local=new LocalServer("efrenmanuel.es", 2004, "testserver", 16, 2003); //Local server test, where the game server is running
                         local.run();
                     } catch (LocalServer.LobbyServerNotAvailable ex) {
                         Logger.getLogger(TestingMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -45,8 +45,8 @@ public class TestingMain {
                     break;
 
                 case 3:
-                    Thread lobby = new Thread(new LobbyServer(2004)); //Lobby server test, where the lobby of servers is running
-                    lobby.start();
+                    LobbyServer lobby=new LobbyServer(true, 2004); //Lobby server test, where the lobby of servers is running
+                    lobby.run();
                     break;
 
             }
